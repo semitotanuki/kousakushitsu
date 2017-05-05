@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>Demo</title>
+  <!-- three.jsを読み込む -->
+  <script src="three.js"></script>
+  <!-- index.jsを読み込む -->
+  <script>
+var init = function() {
+
+  var width = 800,
+      height = 600;
+
+  // レンダラーを作成
+  var renderer = new THREE.WebGLRenderer();
+  renderer.setSize(width, height);
+  document.body.appendChild(renderer.domElement);
+
+  // シーンを作成
+  var scene = new THREE.Scene();
+
+  // カメラを作成
+  var camera = new THREE.PerspectiveCamera(45, width / height, 1, 1000);
+    loader1 = new THREE.JSONLoader();
+    loader1.load( 'space1.json', function ( geometry, materials ) { 
+       var faceMaterial1 = new THREE.MeshLambertMaterial( materials);
+	
+        
+		json = new THREE.Mesh( geometry, faceMaterial1 );
+		
+        json.position.set( 0,0,0);
+		json.name = 'gelgel';
+		
+        json.scale.set( 0.09, 0.09, 0.09);
+		json.rotation.set(0,0,0);
+		
+		json.visible = true;
+        scene.add( json );
+        } );	
+		
+  // 箱を作成
+  var geometry = new THREE.BoxGeometry(1, 1, 1);
+  var material = new THREE.MeshPhongMaterial({ color: 0x0000ff });
+  var box = new THREE.Mesh(geometry, material);
+  box.position.z = -5;
+  scene.add(box);
+
+  // 平行光源
+  var directionalLight = new THREE.DirectionalLight(0xffffff);
+  directionalLight.position.set(1, 1, 1);
+  // シーンに追加
+  scene.add(directionalLight);
+
+  // 初回実行
+  var update = function() {
+    requestAnimationFrame(update);
+
+    // 箱を回転させる
+    box.rotation.x += 0.01;
+    box.rotation.y += 0.01;
+  json.rotation.x += 0.01;
+    json.rotation.y += 0.01;
+    renderer.render(scene, camera);
+  };
+  update();
+}
+window.addEventListener('DOMContentLoaded', init);
+
+</script>
+  
+</head>
+<body>
+</body>
+</html>
