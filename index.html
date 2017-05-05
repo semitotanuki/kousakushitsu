@@ -1,0 +1,307 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>無題ドキュメント</title>
+</head>
+
+
+<script src="three.min.js"></script>
+<script src="TrackballControls.js"></script>
+
+<style type="text/css">
+<!--
+.vb{ 
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  bottom: 0px;
+  left: 0px;
+  margin: auto;
+    max-width: 100%;
+    height: auto;
+
+
+}
+
+-->
+</style>
+
+<body>
+<div id="vb">
+
+<img name="vb" src="pano5.jpg" class="vb" style="visibility:hidden" onClick="this.style.visibility='hidden'" >
+</div>
+
+<script>
+
+var cube;
+var projector, mouse = { x: 0, y: 0 }, INTERSECTED;
+
+
+init();
+animate();
+
+
+	
+function init() {
+	
+
+	
+	
+	
+	 var width = window.innerWidth,
+      height = window.innerHeight;
+	
+    scene = new THREE.Scene();
+  
+    camera = new THREE.PerspectiveCamera( 75, width / height, 1, 10000 );
+    camera.position.set(590,100,100);
+	camera.lookAt({x:0, y:0, z:0 });
+
+   trackball = new THREE.TrackballControls( camera );
+   
+ // 平行光源
+  var directionalLight = new THREE.DirectionalLight(0xffffff,0.5);
+  directionalLight.position.set(0.8, 0.8, 0.8);
+　　directionalLight.castShadow = true;   
+  scene.add(directionalLight);
+
+ var light = new THREE.PointLight( 0xffffff, 0.5, 1000000000 );  
+light.position.set(0,1,0);
+scene.add( light );
+ 
+  light2 = new THREE.AmbientLight(0x333333,1.5);
+    //sceneに環境光オブジェクト(light2)を追加                
+    scene.add(light2);    
+	
+	  sphere = new THREE.Mesh(
+      new THREE.SphereGeometry(2000, 20, 20), // geometry 形状
+     new THREE.MeshLambertMaterial({color: 0x8dc3ff, side: THREE.BackSide }) // material 材質、色
+    );
+	
+    sphere.position.set(0, 0, 0);
+	
+    scene.add(sphere);
+     
+	
+	    loader1 = new THREE.JSONLoader();
+    loader1.load( 'space1.json', function ( geometry, materials ) { 
+       var faceMaterial1 = new THREE.MeshLambertMaterial( materials);
+	
+        
+		json = new THREE.Mesh( geometry, faceMaterial1 );
+		
+        json.position.set( 0,0,0);
+		json.name = 'gelge';
+		
+        json.scale.set( 100, 100, 100 );
+		json.rotation.set(0,0,0);
+		
+		json.visible = true;
+        scene.add( json );
+        } );	
+		
+	
+
+		
+		    loader2 = new THREE.JSONLoader();
+    loader2.load( 'space2.json', function ( geometry, materials ) { 
+       var faceMaterial = new THREE.MeshLambertMaterial(materials) ;
+ 
+        
+		json2 = new THREE.Mesh( geometry, faceMaterial );
+		
+        json2.position.set( 0,0,0);
+		json2.name = 'gelgel';
+		
+        json2.scale.set( 100, 100, 100 );
+		json2.rotation.set(0,0,0);
+		
+		json2.visible = true;
+        scene.add( json2 );
+        } );	
+		
+	
+		
+	    loader3 = new THREE.JSONLoader();
+    loader3.load( 'space3.json', function ( geometry, materials ) { 
+       var faceMaterial = new THREE.MeshLambertMaterial(materials);
+	
+        
+		json3 = new THREE.Mesh( geometry, faceMaterial );
+		
+        json3.position.set( 0,0,0);
+		json3.name = 'gel';
+		
+        json3.scale.set( 100, 100, 100 );
+		json3.rotation.set(0,0,0);
+		
+		json3.visible = true;
+        scene.add( json3 );
+        } );	
+		
+		
+		
+		
+		
+		
+		
+	
+	   renderer = new THREE.WebGLRenderer();
+	
+	   
+	   
+    renderer.setSize(width,height);
+    document.body.appendChild( renderer.domElement );
+ 	projector = new THREE.Projector();
+	
+
+	document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+
+document.addEventListener('mousedown',clickPosition,false);
+}
+
+
+
+
+
+
+function clickPosition( event ){
+	var x = event.clientX;
+	var y = event.clientY;
+	
+	var mouse = new THREE.Vector2();
+	mouse.x = ( x / window.innerWidth ) * 2 - 1;
+	mouse.y = -( y / window.innerHeight ) * 2 + 1;
+	
+	var raycaster = new THREE.Raycaster();
+	raycaster.setFromCamera( mouse, camera);
+	
+	var intersects = raycaster.intersectObjects( scene.children  );
+	
+	if( intersects[0].object.name ==='gelgel' ){
+		location.href = "index5.html";
+		}
+if( intersects[0].object.name ==='gel' ){
+		
+var elements = document.getElementsByClassName( "vb" ) ;
+elements[0].style.visibility = "visible" ;
+		}
+
+}
+
+	
+function onDocumentMouseMove( event ) 
+{
+
+	mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+	mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+}
+
+function animate() 
+{
+	
+    requestAnimationFrame( animate );
+    renderer.render( scene, camera );
+	//画面リサイズ対応
+    window.addEventListener( 'resize', onWindowResize, false );
+    trackball.update();   //これ追加
+
+	
+
+	render();		
+	update();
+}
+
+ function onWindowResize() {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize( window.innerWidth, window.innerHeight );
+  }
+  
+
+			
+		
+
+			
+	
+		
+			
+
+  
+function update()
+{
+	
+	var vector = new THREE.Vector3( mouse.x, mouse.y, 1 );
+	projector.unprojectVector( vector, camera );
+	var ray = new THREE.Raycaster( camera.position, vector.sub( camera.position ).normalize() );
+
+	
+	var intersects = ray.intersectObjects( scene.children );
+	
+
+	
+	
+		
+		if ( intersects[ 0 ].object.name === 'gelgel' ) 
+		{if ( INTERSECTED) 
+				INTERSECTED.material.color.setHex( INTERSECTED.currentHex );
+			
+			INTERSECTED = intersects[ 0 ].object;
+	
+			INTERSECTED.currentHex = INTERSECTED.material.color.getHex();
+	
+			INTERSECTED.material.color.setHex( 0xffff00 );
+		} 
+			else if ( intersects[ 0 ].object.name === 'gel' ) 
+		{if ( INTERSECTED) 
+				INTERSECTED.material.color.setHex( INTERSECTED.currentHex );
+			
+			INTERSECTED = intersects[ 0 ].object;
+	
+			INTERSECTED.currentHex = INTERSECTED.material.color.getHex();
+	
+			INTERSECTED.material.color.setHex( 0xffc0cb);
+		
+			} 
+			
+				else if ( intersects[ 0 ].object.name === 'gelge' ) 
+		{if ( INTERSECTED) 
+				INTERSECTED.material.color.setHex( INTERSECTED.currentHex );
+			
+			INTERSECTED = intersects[ 0 ].object;
+	
+			INTERSECTED.currentHex = INTERSECTED.material.color.getHex();
+	
+			INTERSECTED.material.color.setHex(0xc71585 );
+		
+			} 
+			
+			
+	else 
+	{ 
+	if ( INTERSECTED ) 
+			INTERSECTED.material.color.setHex( INTERSECTED.currentHex )
+		INTERSECTED = null;
+		}		
+}
+
+
+
+
+
+
+function render() 
+{
+	
+	renderer.render( scene, camera );
+}
+
+
+
+</script>
+
+
+</body>
+</html>
